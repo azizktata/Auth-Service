@@ -6,6 +6,8 @@ import com.example.jwtauth.DAO.UserDAO;
 import com.example.jwtauth.Entity.Role;
 import com.example.jwtauth.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +24,26 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public User createNewUser(User user) {
-        Role role=roleDAO.findById("User").get();
-        Set<Role>Roles=new HashSet<>();
-        Roles.add(role);
-        user.setRoles(Roles);
+    public ResponseEntity<?> createNewUser(User user) {
+        // Check if the username  is already taken
+        if (userDAO.findByUserName(user.getUserName()) != null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Username is already taken.");
+        }
+
+        Role role = roleDAO.findById("User").get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setRole(roles);
+
         user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-        return userDAO.save(user);
+
+        User savedUser = userDAO.save(user);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedUser);
     }
 
     public void initRolesAndUser(){
@@ -50,7 +65,7 @@ public class UserService {
         admin.setUserPassword(getEncodedPassword("admin@pass"));
         Set<Role> rolesAdmin=new HashSet<>();
         rolesAdmin.add(roleAdmin);
-        admin.setRoles(rolesAdmin);
+        admin.setRole(rolesAdmin);
         userDAO.save(admin);
 
 //        User user=new User();

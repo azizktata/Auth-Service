@@ -5,6 +5,7 @@ import com.example.jwtauth.Entity.User;
 import com.example.jwtauth.Service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,25 +27,20 @@ public class UserController {
         this.userService.initRolesAndUser();
     }
     @PostMapping("/registerNewUser")
-    public User registerNewUser(@RequestBody User user) {
+    public ResponseEntity<?> registerNewUser(@RequestBody User user) {
         return this.userService.createNewUser(user);
     }
 
-    @GetMapping("/forAdmin")
+    @GetMapping({"/forAdmin"})
     @PreAuthorize("hasRole('Admin')")
     public String forAdmin(){
-        return "This Url is only accesible for Admin";
+        return "This URL is only accessible to the admin";
     }
 
-
-    @GetMapping("/forUser")
+    @GetMapping({"/forUser"})
     @PreAuthorize("hasRole('User')")
     public String forUser(){
-        return "This Url is only accesible for User";
+        return "This URL is only accessible to the user";
     }
-
-
-
-
 
 }
