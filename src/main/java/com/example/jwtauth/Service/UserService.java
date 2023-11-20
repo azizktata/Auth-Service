@@ -3,6 +3,7 @@ package com.example.jwtauth.Service;
 
 import com.example.jwtauth.DAO.RoleDAO;
 import com.example.jwtauth.DAO.UserDAO;
+import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Entity.Role;
 import com.example.jwtauth.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,22 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public ResponseEntity<?> createNewUser(User user) {
+    public ResponseEntity<?> createNewUser(userDTO userDto) {
         // Check if the username  is already taken
-        if (userDAO.findByUserName(user.getUserName()) != null) {
+        if (userDAO.findByUserName(userDto.userName) != null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Username is already taken.");
         }
-
-        Role role = roleDAO.findById("User").get();
+        User user = new User();
+        Role role = roleDAO.findById(userDto.userRole).get();
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         user.setRole(roles);
 
-        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-
+        user.setUserPassword(getEncodedPassword(userDto.userPassword));
+        user.setUserName(userDto.userName);
+        user.setUserEmail(userDto.userEmail);
         User savedUser = userDAO.save(user);
 
         return ResponseEntity
@@ -53,15 +55,19 @@ public class UserService {
         roleDAO.save(roleAdmin);
 
         Role roleUser=new Role();
-        roleUser.setRoleName("User");
-        roleUser.setRoleDescription("User role");
+        roleUser.setRoleName("Student");
+        roleUser.setRoleDescription("Student role");
         roleDAO.save(roleUser);
+
+        Role roleUser2=new Role();
+        roleUser2.setRoleName("Supervisor");
+        roleUser2.setRoleDescription("Supervisor role");
+        roleDAO.save(roleUser2);
 
 
         User admin=new User();
         admin.setUserName("admin123");
-        admin.setUserLastName("admin");
-        admin.setUserFirstName("admin");
+
         admin.setUserPassword(getEncodedPassword("admin@pass"));
         Set<Role> rolesAdmin=new HashSet<>();
         rolesAdmin.add(roleAdmin);

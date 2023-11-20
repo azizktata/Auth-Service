@@ -13,8 +13,7 @@ public class User {
 
     @Id
     private String userName;
-    private String userFirstName;
-    private String userLastName;
+    private String userEmail;
     private String userPassword;
 
 
@@ -30,20 +29,13 @@ public class User {
         this.userName = userName;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
+
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
+    public void setUserEmail(String userEmail) {
+        this.userEmail= userEmail;
     }
 
     public String getUserPassword() {
@@ -60,5 +52,8 @@ public class User {
 
     public void setRole(Set<Role> roles) {
         this.role = roles;
+    }
+
+    public User() {
     }
 }

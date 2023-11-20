@@ -1,6 +1,7 @@
 package com.example.jwtauth.Controllers;
 
 
+import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Entity.User;
 import com.example.jwtauth.Service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -15,9 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-
-
-
     @Autowired
     private UserService userService;
 
@@ -26,9 +24,10 @@ public class UserController {
     public void initRolesAndUser(){
         this.userService.initRolesAndUser();
     }
+
     @PostMapping("/registerNewUser")
-    public ResponseEntity<?> registerNewUser(@RequestBody User user) {
-        return this.userService.createNewUser(user);
+    public ResponseEntity<?> registerNewUser(@RequestBody userDTO userDto) {
+        return this.userService.createNewUser(userDto);
     }
 
     @GetMapping({"/forAdmin"})
@@ -41,6 +40,12 @@ public class UserController {
     @PreAuthorize("hasRole('User')")
     public String forUser(){
         return "This URL is only accessible to the user";
+    }
+
+    @GetMapping({"/forSupervisor"})
+    @PreAuthorize("hasRole('Supervisor')")
+    public String forSuper(){
+        return "This URL is only accessible to the Supervisor";
     }
 
 }
