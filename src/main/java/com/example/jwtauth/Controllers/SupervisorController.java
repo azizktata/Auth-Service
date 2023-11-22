@@ -1,7 +1,10 @@
 package com.example.jwtauth.Controllers;
 
+import com.example.jwtauth.DTO.TeamDTO;
+import com.example.jwtauth.DTO.commentDTO;
 import com.example.jwtauth.DTO.projectDTO;
 import com.example.jwtauth.Service.SupervisorService;
+import com.example.jwtauth.models.Project;
 import com.example.jwtauth.models.Supervisor;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -30,9 +33,9 @@ public class SupervisorController {
 //    @PostMapping()
 //    public String addSupervisor(@RequestBody userDTO userDto){return supervisorService.createSupervisor(userDto);}
 
-//    @Operation(summary = "Delete Supervisor By Id")
-//    @DeleteMapping(value ="/{Id}")
-//    public String removeSupervisor(@PathVariable String Id){return supervisorService.deleteSupervisor(Id);}
+    @Operation(summary = "Delete Supervisor By Id")
+    @DeleteMapping(value ="/{Id}")
+    public String removeSupervisor(@PathVariable String Id){return supervisorService.deleteSupervisor(Id);}
 
     //create project
     @Operation(summary = "Add Project")
@@ -40,28 +43,33 @@ public class SupervisorController {
     @PreAuthorize("hasRole('Supervisor')")
     public String addProject(@PathVariable String Id,@RequestBody projectDTO projectDto){return supervisorService.AddProject(Id,projectDto);}
 
-//    // add comment to stage /only a supervisor can add comment
-//    @Operation(summary = "Add comment to stage / only a supervisor can add comments")
-//    @PostMapping(value ="/{supervisorId}/stages/{stageId}/comments")
-//    public String addComment(@PathVariable String supervisorId,@PathVariable String stageId, @RequestBody commentDTO commentDto){return supervisorService.addComment(supervisorId,stageId,commentDto);}
-//
-//    // view his teams
-//    @Operation(summary = "View My teams")
-//    @GetMapping(value ="/{Id}/teams")
-//    public List<TeamDTO> getSupervisorTeams(@PathVariable String Id){return supervisorService.getMyTeams(Id);}
-//
-//    // view his projects
-//    @Operation(summary = "View My Projects")
-//    @GetMapping(value ="/{Id}/projects")
-//    public List<Project> getSupervisorProjects(@PathVariable String Id){return supervisorService.getMyProjects(Id);}
-//
-//    // Delete comment
-//    @Operation(summary = "Delete comment with Id")
-//    @DeleteMapping(value ="/stages/{stageId}/comments/{commentId}")
-//    public String removeComment(@PathVariable String stageId, @PathVariable String commentId){return supervisorService.removeComment(stageId,commentId);}
-//
-//    @Operation(summary = "Delete project with Id")
-//    @DeleteMapping(value ="/{supervisorId}/projects/{projectId}")
-//    public String removeProject(@PathVariable String supervisorId, @PathVariable String projectId){return supervisorService.removeProject(supervisorId,projectId);}
+    // add comment to stage /only a supervisor can add comment
+    @Operation(summary = "Add comment to stage / only a supervisor can add comments")
+    @PostMapping(value ="/{supervisorId}/stages/{stageId}/comments")
+    @PreAuthorize("hasRole('Supervisor')")
+    public String addComment(@PathVariable String supervisorId,@PathVariable String stageId, @RequestBody commentDTO commentDto){return supervisorService.addComment(supervisorId,stageId,commentDto);}
+
+    // view his teams
+    @Operation(summary = "View My teams")
+    @GetMapping(value ="/{Id}/teams")
+    @PreAuthorize("hasRole('Supervisor')")
+    public List<TeamDTO> getSupervisorTeams(@PathVariable String Id){return supervisorService.getMyTeams(Id);}
+
+    // view his projects
+    @Operation(summary = "View My Projects")
+    @GetMapping(value ="/{Id}/projects")
+    @PreAuthorize("hasRole('Supervisor')")
+    public List<Project> getSupervisorProjects(@PathVariable String Id){return supervisorService.getMyProjects(Id);}
+
+    // Delete comment
+    @Operation(summary = "Delete comment with Id")
+    @DeleteMapping(value ="/stages/{stageId}/comments/{commentId}")
+    @PreAuthorize("hasRole('Admin') OR hasRole('Supervisor')")
+    public String removeComment(@PathVariable String stageId, @PathVariable String commentId){return supervisorService.removeComment(stageId,commentId);}
+
+    @Operation(summary = "Delete project with Id")
+    @DeleteMapping(value ="/{supervisorId}/projects/{projectId}")
+    @PreAuthorize("hasRole('Admin') OR hasRole('Supervisor')")
+    public String removeProject(@PathVariable String supervisorId, @PathVariable String projectId){return supervisorService.removeProject(supervisorId,projectId);}
 
 }

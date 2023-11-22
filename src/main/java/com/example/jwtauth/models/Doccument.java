@@ -3,7 +3,7 @@ package com.example.jwtauth.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-//import org.bson.types.Binary;
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
@@ -16,7 +16,7 @@ public class Doccument {
     private String Id;
 
     private String title;
-    //private Binary doc;
+    private Binary doc;
 
     public Doccument() {
         this.Id = UUID.randomUUID().toString();

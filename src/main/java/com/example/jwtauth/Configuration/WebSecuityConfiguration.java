@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -46,14 +47,13 @@ public class WebSecuityConfiguration  {
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->auth.requestMatchers(  "/authenticate",
                         "/registerNewUser",
-                        "/createNewRole",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
+                        "/createNewRole").permitAll()
+                        .requestMatchers("/api-docs", "/swagger-ui-custom.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
-                .requestMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated());
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated())
+                        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-                http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
