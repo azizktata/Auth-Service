@@ -8,6 +8,7 @@ import com.example.jwtauth.DTO.userLoginDTO;
 import com.example.jwtauth.Entity.Role;
 import com.example.jwtauth.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,8 @@ public class UserService {
     private RoleDAO roleDAO;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private Environment environment;
 
     public void CreateUserPDS(userLoginDTO userLoginDto) {
         userDTO userDto = new userDTO();
@@ -33,13 +36,13 @@ public class UserService {
         userDto.setName(userLoginDto.userName);
 
         if (userLoginDto.userRole.equals("Student")){
-            String apiUrl = "http://localhost:8080/api/v1/students";
+            String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/students";
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.postForObject(apiUrl, userDto, String.class);
             System.out.println(response);
         }
         else if (userLoginDto.userRole.equals("Supervisor")){
-            String apiUrl = "http://localhost:8080/api/v1/supervisors";
+            String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors";
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.postForObject(apiUrl, userDto, String.class);
             System.out.println(response);

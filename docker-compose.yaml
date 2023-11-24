@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=system
+    volumes:
+      - mysql:/var/lib/mysql
+
+  auth-service:
+    image: auth-service
+    restart: 'on-failure'
+    container_name: auth-service-container
+    ports:
+      - 8282:8282
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_DATASOURCE_URL = jdbc:mysql://role-based-auth-mysql-1:3306/authdb?createDatabaseIfNotExist=true
+    links:
+      - mysql
+
+volumes:
+  mysql:

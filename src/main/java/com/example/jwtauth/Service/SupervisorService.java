@@ -1,12 +1,16 @@
 package com.example.jwtauth.Service;
 
+import com.example.jwtauth.DAO.UserDAO;
 import com.example.jwtauth.DTO.TeamDTO;
 import com.example.jwtauth.DTO.commentDTO;
 import com.example.jwtauth.DTO.projectDTO;
+import com.example.jwtauth.Exceptions.ObjectNotFoundException;
 import com.example.jwtauth.models.Project;
 import com.example.jwtauth.models.Supervisor;
 import com.example.jwtauth.models.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,19 +23,24 @@ import java.util.List;
 public class SupervisorService {
 
     private RestTemplate restTemplate;
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private Environment environment;
 
     public SupervisorService() {
         this.restTemplate = new RestTemplate();
     }
 
     public Supervisor getSupervisor(String id) {
-        String URI = "http://localhost:8080/api/v1/supervisors/"+id;
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+id;
         Supervisor supervisor =restTemplate.getForObject(URI,Supervisor.class);
         return supervisor;
     }
 
     public List<Supervisor> getAllSupervisors() {
-        String URI = "http://localhost:8080/api/v1/supervisors";
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors";
         ResponseEntity<List<Supervisor>> responseEntity = restTemplate.exchange(
                 URI,
                 HttpMethod.GET,
@@ -47,13 +56,14 @@ public class SupervisorService {
 
 
     public String AddProject(String Id, projectDTO projectDto) {
-        String apiUrl = "http://localhost:8080/api/v1/supervisors/"+Id+"/projects";
+        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+Id+"/projects";
         String response = restTemplate.postForObject(apiUrl, projectDto ,String.class);
         return response;
     }
 
     public String deleteSupervisor(String Id) {
-        String apiUrl = "http://localhost:8080/api/v1/supervisors/"+Id;
+        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+Id;
+        userDAO.delete(userDAO.findById(Id).orElseThrow(() -> new ObjectNotFoundException("Supervisor not found")));
         return restTemplate.exchange(
                 apiUrl,
                 org.springframework.http.HttpMethod.DELETE,
@@ -63,13 +73,13 @@ public class SupervisorService {
     }
 
     public String addComment(String supervisorId, String stageId, commentDTO commentDto) {
-        String apiUrl = "http://localhost:8080/api/v1/supervisors/"+supervisorId+"/stages/"+stageId+"/comments";
+        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+supervisorId+"/stages/"+stageId+"/comments";
         String response = restTemplate.postForObject(apiUrl, commentDto ,String.class);
         return response;
     }
 
     public List<TeamDTO> getMyTeams(String Id) {
-        String URI = "http://localhost:8080/api/v1/supervisors/"+Id+"/teams";
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+Id+"/teams";
         ResponseEntity<List<TeamDTO>> responseEntity = restTemplate.exchange(
                 URI,
                 HttpMethod.GET,
@@ -84,7 +94,7 @@ public class SupervisorService {
     }
 
     public List<Project> getMyProjects(String Id) {
-        String URI = "http://localhost:8080/api/v1/supervisors/"+Id+"/projects";
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+Id+"/projects";
         ResponseEntity<List<Project>> responseEntity = restTemplate.exchange(
                 URI,
                 HttpMethod.GET,
@@ -99,7 +109,7 @@ public class SupervisorService {
     }
 
     public String removeComment(String stageId, String commentId) {
-        String URI = "http://localhost:8080/api/v1/supervisors/stages/"+stageId+"/comments/"+commentId;
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/stages/"+stageId+"/comments/"+commentId;
         return restTemplate.exchange(
                 URI,
                 org.springframework.http.HttpMethod.DELETE,
@@ -109,7 +119,7 @@ public class SupervisorService {
     }
 
     public String removeProject(String supervisorId, String projectId) {
-        String URI = "http://localhost:8080/api/v1/supervisors/"+supervisorId+"/projects/"+projectId;
+        String URI = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+supervisorId+"/projects/"+projectId;
         return restTemplate.exchange(
                 URI,
                 org.springframework.http.HttpMethod.DELETE,
