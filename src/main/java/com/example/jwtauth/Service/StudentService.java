@@ -2,14 +2,14 @@ package com.example.jwtauth.Service;
 
 import com.example.jwtauth.DAO.UserDAO;
 import com.example.jwtauth.DTO.taskDTO;
+import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Entity.User;
 import com.example.jwtauth.Exceptions.ObjectNotFoundException;
 import com.example.jwtauth.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,10 +49,36 @@ public class StudentService {
         List<Student> students = responseEntity.getBody();
         return students;
     }
+    public String updateStudent(String studentId, userDTO userDto) {
+        String apiUrl = "http://localhost:8080/api/v1/students/"+studentId;
 
+        User updatedUser = userDAO.findById(userDto.name)
+                .orElseThrow(() -> new ObjectNotFoundException("Student not found"));
+        updatedUser.setUserName(userDto.name);
+        updatedUser.setUserEmail(userDto.email);
+        userDAO.save(updatedUser);
+        // Set up headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create HttpEntity with headers and the userDto as the request body
+        HttpEntity<userDTO> requestEntity = new HttpEntity<>(userDto, headers);
+        // Make the PUT request with exchange
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.PUT,
+                requestEntity,
+                String.class
+        );
+
+        // Extract the response body from the ResponseEntity
+        String response = responseEntity.getBody();
+        return response;
+    }
     public String deleteStudent(String Id) {
         String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/students/"+Id;
-        userDAO.delete(userDAO.findById(Id).orElseThrow(() -> new ObjectNotFoundException("Student not found")));
+//        userDAO.delete(userDAO.findById(Id)
+//                .orElseThrow(() -> new ObjectNotFoundException("Student not found")));
         return restTemplate.exchange(
                 apiUrl,
                 org.springframework.http.HttpMethod.DELETE,
@@ -124,4 +150,6 @@ public class StudentService {
                 String.class
         ).getBody();
     }
+
+
 }

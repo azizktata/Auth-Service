@@ -1,6 +1,7 @@
 package com.example.jwtauth.Controllers;
 
 import com.example.jwtauth.DTO.taskDTO;
+import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Service.StudentService;
 import com.example.jwtauth.models.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +28,16 @@ public class StudentController {
     @PreAuthorize("hasRole('Admin')")
     public List<Student> listStudents(){return studentService.getAllStudent();}
 
-//    @Operation(summary = "Delete a student By Id")
-//    @DeleteMapping(value ="/{studentId}")
-//    public String removeStudent(@PathVariable String studentId){return studentService.deleteStudent(studentId);}
-//
+    @Operation(summary = "Delete a student By Id")
+    @DeleteMapping(value ="/{studentId}")
+    @PreAuthorize("hasRole('Student') OR hasRole('Admin')")
+    public String removeStudent(@PathVariable String studentId){return studentService.deleteStudent(studentId);}
+
+    @Operation(summary = "Update Student")
+    @PutMapping(value = "/{studentId}")
+    @PreAuthorize("hasRole('Student')")
+    public String updateStudent(@PathVariable String studentId,@RequestBody userDTO userDto){return studentService.updateStudent(studentId,userDto);}
+
     // Enroll in project
     @Operation(summary = "Enroll in Project")
     @PostMapping(value ="/{studentId}/projects/{projectId}")

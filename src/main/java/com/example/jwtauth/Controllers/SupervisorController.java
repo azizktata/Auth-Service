@@ -3,6 +3,7 @@ package com.example.jwtauth.Controllers;
 import com.example.jwtauth.DTO.TeamDTO;
 import com.example.jwtauth.DTO.commentDTO;
 import com.example.jwtauth.DTO.projectDTO;
+import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Service.SupervisorService;
 import com.example.jwtauth.models.Project;
 import com.example.jwtauth.models.Supervisor;
@@ -29,9 +30,10 @@ public class SupervisorController {
     @PreAuthorize("hasRole('Supervisor')")
     public Supervisor getSupervisor(@PathVariable String Id){return supervisorService.getSupervisor(Id);}
 
-//    @Operation(summary = "Add Supervisor")
-//    @PostMapping()
-//    public String addSupervisor(@RequestBody userDTO userDto){return supervisorService.createSupervisor(userDto);}
+    @Operation(summary = "Update Supervisor")
+    @PutMapping(value = "/{supervisorId}")
+    @PreAuthorize("hasRole('Supervisor')")
+    public String updateSupervisor(@PathVariable String supervisorId,@RequestBody userDTO userDto){return supervisorService.updateSupervisor(supervisorId,userDto);}
 
     @Operation(summary = "Delete Supervisor By Id")
     @DeleteMapping(value ="/{Id}")
