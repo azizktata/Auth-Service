@@ -75,10 +75,10 @@ public class StudentService {
         String response = responseEntity.getBody();
         return response;
     }
-    public String deleteStudent(String Id) {
-        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/students/"+Id;
-//        userDAO.delete(userDAO.findById(Id)
-//                .orElseThrow(() -> new ObjectNotFoundException("Student not found")));
+    public String deleteStudent(String name) {
+        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/students/"+name;
+       userDAO.delete(userDAO.findById(name)
+                .orElseThrow(() -> new ObjectNotFoundException("Student not found")));
         return restTemplate.exchange(
                 apiUrl,
                 org.springframework.http.HttpMethod.DELETE,

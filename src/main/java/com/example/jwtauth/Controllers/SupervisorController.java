@@ -35,9 +35,10 @@ public class SupervisorController {
     @PreAuthorize("hasRole('Supervisor')")
     public String updateSupervisor(@PathVariable String supervisorId,@RequestBody userDTO userDto){return supervisorService.updateSupervisor(supervisorId,userDto);}
 
-    @Operation(summary = "Delete Supervisor By Id")
-    @DeleteMapping(value ="/{Id}")
-    public String removeSupervisor(@PathVariable String Id){return supervisorService.deleteSupervisor(Id);}
+    @Operation(summary = "Delete Supervisor By Name")
+    @DeleteMapping(value ="/{name}")
+    @PreAuthorize("hasRole('Supervisor')")
+    public String removeSupervisor(@PathVariable String name){return supervisorService.deleteSupervisor(name);}
 
     //create project
     @Operation(summary = "Add Project")

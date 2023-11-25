@@ -12,6 +12,7 @@ services:
       - mysql:/var/lib/mysql
 
   auth-service:
+    build: .
     image: auth-service
     restart: 'on-failure'
     container_name: auth-service-container

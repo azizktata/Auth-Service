@@ -5,6 +5,7 @@ import com.example.jwtauth.DTO.userDTO;
 import com.example.jwtauth.Service.StudentService;
 import com.example.jwtauth.models.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +25,14 @@ public class StudentController {
 
 
     @Operation(summary = "Get All Students")
-    @GetMapping()
+    @GetMapping
     @PreAuthorize("hasRole('Admin')")
     public List<Student> listStudents(){return studentService.getAllStudent();}
 
-    @Operation(summary = "Delete a student By Id")
-    @DeleteMapping(value ="/{studentId}")
+    @Operation(summary = "Delete a student By Name")
+    @DeleteMapping(value ="/{name}")
     @PreAuthorize("hasRole('Student') OR hasRole('Admin')")
-    public String removeStudent(@PathVariable String studentId){return studentService.deleteStudent(studentId);}
+    public String removeStudent(@PathVariable String name){return studentService.deleteStudent(name);}
 
     @Operation(summary = "Update Student")
     @PutMapping(value = "/{studentId}")

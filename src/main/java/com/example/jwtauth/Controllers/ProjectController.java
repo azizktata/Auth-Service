@@ -8,8 +8,6 @@ import com.example.jwtauth.models.Stage;
 import com.example.jwtauth.models.Task;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,9 +101,9 @@ public class ProjectController {
     public String removeTaskProjectById(@PathVariable String projectId,@PathVariable String taskId){return projectService.removeTaskById2(projectId,taskId);}
 
     @Operation(summary = "Update task state")
-    @PutMapping(value ="/{Id}/tasks/{taskId}")
+    @PutMapping(value ="/{projectId}/tasks/{taskId}")
     @PreAuthorize("hasRole('Student')")
-    public String updateTaskState(@PathVariable String Id,@PathVariable String taskId){return projectService.updateTask(Id,taskId);}
+    public String updateTaskState(@PathVariable String projectId,@PathVariable String taskId){return projectService.updateTask(projectId,taskId);}
 
 
     // Delete a project

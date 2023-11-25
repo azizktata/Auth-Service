@@ -62,9 +62,10 @@ public class SupervisorService {
         return response;
     }
 
-    public String deleteSupervisor(String Id) {
-        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+Id;
-//        userDAO.delete(userDAO.findById(Id).orElseThrow(() -> new ObjectNotFoundException("Supervisor not found")));
+    public String deleteSupervisor(String name) {
+        String apiUrl = "http://"+environment.getProperty("ip.address")+":8080/api/v1/supervisors/"+name;
+        userDAO.delete(userDAO.findById(name)
+                .orElseThrow(() -> new ObjectNotFoundException("Supervisor not found")));
         return restTemplate.exchange(
                 apiUrl,
                 org.springframework.http.HttpMethod.DELETE,
