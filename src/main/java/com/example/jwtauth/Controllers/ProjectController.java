@@ -82,7 +82,12 @@ public class ProjectController {
     @PreAuthorize("hasRole('Supervisor') OR hasRole('Student')")
     public InputStream downloadDoc(@PathVariable String projectId) throws IOException {return projectService.downloadDoc(projectId);}
 
-//
+    @Operation(summary = "Update document state")
+    @PutMapping(value ="/{projectId}/document/{code}")
+    public String validateDoc(@PathVariable String Id,@PathVariable String code){return projectService.manageDoc(Id,code);}
+
+
+    //
     @Operation(summary = "Delete Stage")
     @DeleteMapping (value = "/stages/{stageId}")
     @PreAuthorize("hasRole('Student')")

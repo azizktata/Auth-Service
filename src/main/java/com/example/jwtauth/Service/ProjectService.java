@@ -208,6 +208,21 @@ public class ProjectService {
         return response;
     }
 
+    public String manageDoc(String projectId, String code) {
+        String apiUrl = "http://localhost:8080/api/v1/projects/"+projectId+"/document/"+code;
+        // Make the PUT request with exchange
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.PUT,
+                null,
+                String.class
+        );
+
+        // Extract the response body from the ResponseEntity
+        String response = responseEntity.getBody();
+        return response;
+    }
+
     public String deleteProject(String projectId) {
         String apiUrl = "http://localhost:8080/api/v1/projects/"+projectId;
         return restTemplate.exchange(
@@ -217,4 +232,6 @@ public class ProjectService {
                 String.class
         ).getBody();
     }
+
+
 }
